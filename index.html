@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Manila: OpenStack's Shared File Services Program - OpenStack Munich Meetup – Lets talk about Storage</title>
+
+		<meta name="description" content="Manila: OpenStack's Shared File Services Program">
+		<meta name="author" content="tlichten">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Font Awesome Icons -->
+		<link rel="stylesheet" href="lib/font-awesome-4.3.0/css/font-awesome.min.css">
+
+
+		<style>
+
+		.circle {
+			width:500px;
+			height:500px;
+			border-radius:50%;
+			font-size:180px !important;
+			line-height:500px !important;
+			text-align:center;
+		    background-color:#3b83c0;
+		    line-height:80px;;
+		    vertical-align:middle;
+		    color: #FFF;
+		}
+
+		.red {
+			color: #d95c5c;
+		}
+
+		.teal {
+			color: #00b5ad;
+		}
+		
+		.blue {
+			color: #3b83c0;
+		}
+
+		.yellow {
+			color: #f2c61f;
+		}
+
+		.green {
+			color: #5bbd72;
+		}
+		 
+		.orange {
+			color: #e07b53;
+		}
+
+		.purple {
+			color: #564f8a;
+		}		
+		
+		ul {
+		    list-style-type: none !important;
+		}
+
+		</style>
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+	<!-- 
+		TODO
+
+	-->
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					
+				</section>
+				<section data-background="images/16316218062_b1f5902f24_k_d.jpg">
+					<h1>OpenStack Manila</h1>
+					<h3>Shared File Services Program</h3>
+					<p>
+						<small>Created by <a href="http://github.com/tlichten">Thomas</a> / <a href="http://twitter.com/tlichtenntap">@tlichtenntap</a></small>
+					</p>
+				</section>
+
+				<section>
+					<h2>Put simply ...</h2>
+					<p>
+						<i class="fa fa-database fa-2x teal"></i>&nbsp;
+						<i class="fa fa-database fa-2x green fragment" data-fragment-index="2"></i>&nbsp;
+						<i class="fa fa-database fa-2x blue fragment" data-fragment-index="2"></i>
+					</p>
+					<p>
+						<i class="fa fa-arrows-alt fa-2x fragment" data-fragment-index="3"></i><br/>
+					</p>
+					<p>
+						<i class="fa fa-desktop fa-2x purple fragment" data-fragment-index="4"></i>&nbsp;
+						<i class="fa fa-desktop fa-2x orange fragment" data-fragment-index="5"></i>&nbsp;
+						<i class="fa fa-desktop fa-2x red fragment" data-fragment-index="5"></i>
+					</p>
+				</section>
+
+				<section data-background="white" data-background-transition="zoom">
+					<p><div class="circle" style="float:left;">65%</div><p><h4>of all storage sold is for file-based use cases</h4>per IDC, 2012</p>
+				</section>
+				<section data-background="images/determined-fumanchu-computer-stare.jpg" >
+						<pre><code data-trim contenteditable>
+commit 0483210d09f291dfef304d620a12f3d22550d56d
+Author: bswartz &lt;ben@swartzlander.org&gt;
+Date:   Thu Aug 8 07:30:20 2013 -0700
+
+    Initial commit
+					</code></pre>
+				</section>								
+				<section>
+					<section>
+						<h2>Use Cases</h2>
+						<p class="fragment">Self-service share management</p>
+						<p class="fragment">Replace homegrown systems</p>
+						<p class="fragment">Onboard traditional workloads</p>
+						<p class="fragment">CI/CD - Clone database shares for parallel testing</p>
+					</section>
+					<section data-background="images/conspiracy-keanu.jpg" data-background-transition="zoom">
+							<p class="fragment  strike">Underpin Cinder with Manila created shares?</p>
+					</section>
+				</section>
+				<section>
+					<section>
+						<h2>Key concepts</h2>
+						<ul>
+						<li class="fragment">
+							<i class="fa fa-folder-open fa-fw"></i> Share (an instance of a shared file system)
+							<ul>
+								<li>Size</li>
+								<li>Protocol (NFS, CIFS, &hellip;)</li>
+							</ul>
+						</li>
+						<li class="fragment">
+							<i class="fa fa-lock fa-fw"></i> Share access rules and security services
+							<ul>
+								<li>IP, User/SID, Cert based</li>
+								<li>Kerberos/Active Directory/LDAP</li>
+							</ul>
+						</li>
+						<li class="fragment">
+							<i class="fa fa-magic fa-fw"></i> Share Types
+							<ul>
+								<li>Support for backend driver specific extra specs</li>
+							</ul>
+						</li>
+						</ul>
+					</section>
+					<section>
+						<ul>
+							<li>
+								<i class="fa fa-camera-retro fa-fw"></i> Snapshots
+								<ul>
+									<li>Read-only copy</li>
+									<li>New writable shares can be created from snapshot</li>
+								</ul>
+							</li>
+							<li class="fragment">
+								<i class="fa fa-cubes fa-fw"></i> Backend
+								<ul>
+									<li>Provider of shares</li>
+									<li>Multiple backend capable</li>
+								</ul>
+							</li>
+							<li class="fragment">
+								<i class="fa fa-plug fa-fw"></i> Driver
+								<ul>
+									<li>Vendor or technology-specific implementation</li>
+								</ul>
+							</li>
+						</ul>
+					</section>
+				</section>
+				<section>
+					<h1>Demo</h2>			
+				</section>
+				<section>				
+					<section>
+						<h2>Architecture</h2>
+							<ul>
+								<li class="fragment">
+									<i class="fa fa-exchange fa-fw"></i> manila-api
+									<ul>
+										<li>REST API through WSGI application</li>
+									</ul>
+								</li>
+								<li class="fragment">
+									<i class="fa fa-clock-o fa-fw"></i> manila-scheduler
+									<ul>
+										<li>Makes provisioning decisions for share requests</li>
+									</ul>
+								</li>
+								<li class="fragment">
+									<i class="fa fa-cogs fa-fw"></i> manila-share
+									<ul>
+										<li>Manager process + one process per backend</li>
+										<li>Wraps driver for storage subsystem</li>
+									</ul>
+								</li>
+							</ul>
+					</section>
+					<section>
+					<h2>Manila is not in the data path</h2>
+					<p>
+						<i class="fa fa-desktop fa-2x fa-fw teal"></i>&nbsp;
+						<i class="fa fa-exchange fa-2x fa-fw green fragment"></i>&nbsp;
+						<i class="fa fa-database fa-2x fa-fw blue fragment"></i>
+					</p>
+					</section>
+				</section>
+				<section>
+					<h2>What's new in Kilo</h2>
+						<ul>
+							<li class="fragment">
+								New driver/networking modes 
+							</li>
+							<li class="fragment">
+								New drivers
+							</li>
+							<li class="fragment">
+								Level of access for shares (RO/RW)
+							</li>
+							<li class="fragment">
+								Public/Private shares
+							</li>
+							<li class="fragment">
+								Private share types
+							</li>
+							<li class="fragment">
+								Pool-aware scheduler support
+							</li>
+							</li>
+							<li class="fragment">
+								Horizon plug-in
+							</li>
+						</ul>
+				</section>
+				<section>
+					<h2>New Kilo Driver modes</h2>
+						<ul>
+							<li class="fragment">
+								Single SVM
+								<ul>
+									<li>SVM setup done manually</li>
+								</ul>
+							</li>
+							<li class="fragment">
+								Flat network multiple SVMs
+								<ul>
+									<li>SVMs setup by Manila with single flat network</li>
+									<li>All SVM IPs come from the same subnet</li>
+								</ul>
+							</li>
+							<li class="fragment">
+								Segmented network multiple SVMs
+								<ul>
+									<li>SVMs setup by Manila with segemented networking</li>
+									<li>Network segmentation: VLAN, VXLAN, GRE, STT, etc.</li>
+								</ul>
+							</li>
+						</ul>
+				</section>
+				<section>
+					<section>
+						<h2>Drivers</h2>
+							<ul>
+								<li class="fragment">
+									Juno
+									<ul>
+										<li>Generic driver</li>									
+										<li>NetApp Clustered Data Ontap</li>
+										<li>EMC VNX</li>
+										<li>Red Hat Glusterfs</li>
+									</ul>
+								</li>
+							</ul>
+					</section>
+					<section>
+							<ul>
+								<li>
+									Kilo
+									<ul>
+										<li>EMC Isilon</li>									
+										<li>Ganesha</li>
+										<li>HDS</li>
+										<li>HDFS</li>
+										<li>IBM GPFS/Ganesha</li>
+										<li>HP 3Par</li>
+										<li>Huawei OceanStor V3</li>
+										<li>Oracle ZFS</li>
+									</ul>
+								</li>
+							</ul>
+					</section>					
+				</section>
+				<section>
+						<h2>Automation</h2>
+						<p>Manila Puppet Module</p>
+
+						  <pre><code data-trim class="bash">
+manila::backend::netapp { 'myBackend':
+	netapp_login => 'clusterAdmin',
+	netapp_password => 'password',
+	netapp_server_hostname => 'netapp.mycorp.com',
+	netapp_transport_type => 'https',
+}
+						</code></pre>
+						<p><a href="https://github.com/stackforge/puppet-manila">https://github.com/stackforge/puppet-manila</a></p>
+				</section>		
+				<section>
+					<h2>Futures/Dev discussion</h2>
+						<ul>
+							<li class="fragment">
+								Manage/Unmanage
+							</li>
+							<li class="fragment">
+								Replication
+							</li>
+							<li class="fragment">
+								Automated mounts
+							</li>
+							<li class="fragment">
+								CephFS driver
+							</li>
+							<li class="fragment">
+								Backup
+							</li>
+						</ul>
+				</section>				
+				<section>
+						<h2>How to get started</h2>
+						<p>vagrant-devstack-manila
+						  <pre><code data-trim class="bash">
+$ git clone https://github.com/tlichten/vagrant-devstack-manila
+$ cd vagrant-devstack-manila
+$ vagrant up
+						</code></pre>
+						</p>
+						<p class="fragment" data-fragment-index="2">Packages for RDO, OpenSUSE, Ubuntu</p>
+						<p class="fragment" data-fragment-index="3">IRC on Freenode<br/>
+						<pre class="fragment" data-fragment-index="3"><code data-trim class="bash">
+#openstack-manila
+#openstack-meeting-alt at 15:00 UTC on Thursdays
+
+						</code></pre>
+						</p>
+					</section>
+				<section data-background="images/15426058314_e16127eb29_k_d.jpg">
+					<h1>Credits</h1>
+					<div style="background:#3F3F3F; padding:5px; opacity:0.9;"><ul>
+							<li><a href="https://github.com/hakimel/reveal.js">Reveal.js by Hakim El Hattab</a></li>									
+							<li><a href="http://www.flickr.com/photos/danielchodusov/16316218062">Sunrise over Manila by Daniel Chodusov</a>, <a href="https://creativecommons.org/licenses/by-nd/2.0/">Creative Commons licensed</a></li>
+							<li><a href="http://mylolface.com/c9">Fumanchu computer stare by My lol Face</a></li>
+							<li><a href="http://knowyourmeme.com/memes/conspiracy-keanu">Conspiracy Keanu by Know Your Meme</a></li>
+							<li><a href="https://www.flickr.com/photos/traveloriented/15426058314">Manila Bay Sunset by travel oriented</a>, <a href="https://creativecommons.org/licenses/by-nd/2.0/">Creative Commons licensed</a></li>
+					</ul></div>
+				</section>
+
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+				transitionSpeed: 'slow',
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>

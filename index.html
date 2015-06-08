@@ -4,7 +4,7 @@
 	<head>
 		<meta charset="utf-8">
 
-		<title>Manila: OpenStack's Shared File Services Program - OpenStack Munich Meetup – Lets talk about Storage</title>
+		<title>Manila: OpenStack's Shared File Services Program - OpenStack CEE Day, Budapest</title>
 
 		<meta name="description" content="Manila: OpenStack's Shared File Services Program">
 		<meta name="author" content="tlichten">
@@ -71,6 +71,19 @@
 		    list-style-type: none !important;
 		}
 
+
+		.logo-position {
+		    bottom: 16px;
+		    display: block;
+		    left: 90%;
+		    margin-left: -139px;
+		    position: absolute;
+		    z-index: 20;
+		}
+
+		.reveal section img {
+			background: rgba(255, 255, 255, 0.85);
+		}
 		</style>
 		<!-- Printing and PDF exports -->
 		<script>
@@ -102,50 +115,19 @@
 					<h1>OpenStack Manila</h1>
 					<h3>Shared File Services Program</h3>
 					<p>
-						<small>Created by <a href="http://github.com/tlichten">Thomas</a> / <a href="http://twitter.com/tlichtenntap">@tlichtenntap</a></small>
+						<small><a href="http://github.com/tlichten">Thomas Lichtenstein (Cloud Architect, NetApp)</a> / <a href="http://twitter.com/tlichtenntap">@tlichtenntap</a> / <a href="mailto:tlichten@netapp.com">tlichten@netapp.com</a></small>
 					</p>
 				</section>
-
-				<section>
-					<h2>Put simply ...</h2>
-					<p>
-						<i class="fa fa-database fa-2x teal"></i>&nbsp;
-						<i class="fa fa-database fa-2x green fragment" data-fragment-index="2"></i>&nbsp;
-						<i class="fa fa-database fa-2x blue fragment" data-fragment-index="2"></i>
-					</p>
-					<p>
-						<i class="fa fa-arrows-alt fa-2x fragment" data-fragment-index="3"></i><br/>
-					</p>
-					<p>
-						<i class="fa fa-desktop fa-2x purple fragment" data-fragment-index="4"></i>&nbsp;
-						<i class="fa fa-desktop fa-2x orange fragment" data-fragment-index="5"></i>&nbsp;
-						<i class="fa fa-desktop fa-2x red fragment" data-fragment-index="5"></i>
-					</p>
-				</section>
-
-				<section data-background="white" data-background-transition="zoom">
-					<p><div class="circle" style="float:left;">65%</div><p><h4>of all storage sold is for file-based use cases</h4>per IDC, 2012</p>
-				</section>
-				<section data-background="images/determined-fumanchu-computer-stare.jpg" >
-						<pre><code data-trim contenteditable>
-commit 0483210d09f291dfef304d620a12f3d22550d56d
-Author: bswartz &lt;ben@swartzlander.org&gt;
-Date:   Thu Aug 8 07:30:20 2013 -0700
-
-    Initial commit
-					</code></pre>
-				</section>								
-				<section>
-					<section>
-						<h2>Use Cases</h2>
-						<p class="fragment">Self-service share management</p>
-						<p class="fragment">Replace homegrown systems</p>
-						<p class="fragment">Onboard traditional workloads</p>
-						<p class="fragment">CI/CD - Clone database shares for parallel testing</p>
-					</section>
-					<section data-background="images/conspiracy-keanu.jpg" data-background-transition="zoom">
-							<p class="fragment  strike">Underpin Cinder with Manila created shares?</p>
-					</section>
+				 <section data-markdown>
+					<script type="text/template">
+						## Agenda
+						0. Key concepts of Manila <!-- .element: class="fragment" data-fragment-index="0" -->
+						1. Demo/Video <!-- .element: class="fragment" data-fragment-index="1" -->
+						2. History of Manila &amp; who is involved? <!-- .element: class="fragment" data-fragment-index="2" -->
+						2. Use cases for Manila (in context of new Kilo features)<!-- .element: class="fragment" data-fragment-index="3" -->
+						4. Planned work in Liberty and beyond<!-- .element: class="fragment" data-fragment-index="4" -->
+						5. How to get started with Manila<!-- .element: class="fragment" data-fragment-index="5" -->
+					</script>
 				</section>
 				<section>
 					<section>
@@ -199,186 +181,500 @@ Date:   Thu Aug 8 07:30:20 2013 -0700
 					</section>
 				</section>
 				<section>
-					<h1>Demo</h2>			
-				</section>
-				<section>				
-					<section>
-						<h2>Architecture</h2>
-							<ul>
-								<li class="fragment">
-									<i class="fa fa-exchange fa-fw"></i> manila-api
-									<ul>
-										<li>REST API through WSGI application</li>
-									</ul>
-								</li>
-								<li class="fragment">
-									<i class="fa fa-clock-o fa-fw"></i> manila-scheduler
-									<ul>
-										<li>Makes provisioning decisions for share requests</li>
-									</ul>
-								</li>
-								<li class="fragment">
-									<i class="fa fa-cogs fa-fw"></i> manila-share
-									<ul>
-										<li>Manager process + one process per backend</li>
-										<li>Wraps driver for storage subsystem</li>
-									</ul>
-								</li>
-							</ul>
-					</section>
-					<section>
-					<h2>Manila is not in the data path</h2>
-					<p>
-						<i class="fa fa-desktop fa-2x fa-fw teal"></i>&nbsp;
-						<i class="fa fa-exchange fa-2x fa-fw green fragment"></i>&nbsp;
-						<i class="fa fa-database fa-2x fa-fw blue fragment"></i>
-					</p>
-					</section>
+				  <video>
+				    <source data-src="videos/manila.mp4" type="video/mp4" />
+				  </video>
 				</section>
 				<section>
+                <h3>Who is involved in Manila?</h3>
+                <table style="border-style: none">
+                    <tr>
+                        <td rowspan="2" style="font-size: 14pt;">
+                            <h4>Drivers</h4>
+                            <ul>
+                                <li>Generic (reference) driver</li>
+                                <li>NetApp Clustered Data ONTAP</li>
+                                <li>Red Hat GlusterFS</li>
+                                <li>EMC VNX</li>
+                                <li class="blue">HP 3PAR File Persona</li>
+                                <li class="blue">Hadoop Distributed File System (HDFS)</li>
+                                <li class="blue">Hitachi NAS Scale-out Platform (SOP)</li>
+                                <li class="blue">Huawei NAS</li>
+                                <li class="blue">IBM General Parallel File System (GPFS)</li>
+                                <li class="blue">Oracle ZFS Storage Appliance</li>
+                                <li class="blue">Quobyte FSAL with NFS Ganesha</li>
+                                <li class="blue">EMC Isilon</li>
+                            </ul>
+                            <p><small class="blue">Drivers in blue are new in Kilo</small></p>
+                        </td>
+                        <td style="font-size: 16pt;" colspan="2">
+                            <h4>Contributors</h4>
+                            <ul>
+                                <li><b>Core:</b> NetApp (PTL, 1 Core), Mirantis (2), EMC (1), HP (1), SUSE (1)</li>
+                                <li><b>Reviewers:</b> Kilo (47), All (68)</li>
+                                <li><b>Committers:</b> Kilo (38), All (66)</li>
+                                <li><b>Lines of Code:</b> Kilo (95794)</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 16pt;">
+                            <h4>Kilo Reviews</h4>
+                            <img width="480" src="images/kilo_review.png"/>
+                        </td>
+                        <td style="font-size: 16pt;">
+                            <h4>Kilo Lines of Code</h4>
+                            <img width="480" src="images/kilo_loc.png"/>
+                        </td>
+                    </tr>
+                </table>
+                </section>
+
+                <section>
+                <h3>The age of cloud file services</h3>
+                <ul>
+                    <li>OpenStack Manila: June 2013</li>
+                    <li>Microsoft Azure Files: May 2014</li>
+                    <li>Amazon Web Services Elastic File Services: April 2015</li>
+                </ul>
+                <p/>
+                <table style="border-style: none; font-size: 16pt;">
+                    <thead>
+                    <tr>
+                        <th>Storage Service</th>
+                        <th>Amazon Web Services</th>
+                        <th>Microsoft Azure</th>
+                        <th>OpenStack</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Object</td>
+                        <td>S3</td>
+                        <td>Blob &amp; Table Storage</td>
+                        <td>Swift</td>
+                    </tr>
+                    <tr>
+                        <td>Archival (Cold) storage</td>
+                        <td>Glacier</td>
+                        <td>Azure Backup</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>Block</td>
+                        <td>Elastic Block Storage (EBS)</td>
+                        <td>Blob Storage</td>
+                        <td>Cinder</td>
+                    </tr>
+                    <tr>
+                        <td>File</td>
+                        <td>Elastic File Storage (EFS)</td>
+                        <td>Azure Files</td>
+                        <td><b>Manila</b></td>
+                    </tr>
+                </table>
+                </section>
+                <section>
+                <h3>Use Cases for Manila</h3>
+                <span style="font-size: 20pt">
+                <ul>
+                    <li>Big Data</li>
+                    <ul>
+                        <li>Manila’s HDFS native driver plugin</li>
+                        <li>Sahara integration</li>
+                    </ul><br/>
+                    <li>Database as a service</li>
+                    <ul>
+                        <li>Trove integration</li>
+                    </ul><br/>
+                    <li>Support legacy enterprise applications</li>
+                    <br/>
+                    <li>Cross-tenant data sharing</li>
+                    <br/>
+                    <li>On-Demand development and build environments</li>
+                    <ul>
+                        <li>Continuous Integration</li>
+                    </ul><br/>
+                    <li>Hybrid Cloud shares</li>
+                    <ul>
+                        <li>External consumption of shares </li>
+                        <li>Migration of workloads to the cloud from on-premise file shares</li>
+                    </ul>
+                </ul>
+                 </span>
+                </section>
+                <section style="font-size: 20pt">
+                <h3>Use Case: Manila for Standalone Shared File Services Management</h3>
+                <h5>An Open, Standard API for File System Provisioning and Management</h5>
+                <ul>
+                    <li>Replace homegrown or legacy systems</li>
+                    <li>Improve IT responsiveness by providing self-service share management</li>
+                    <li>Integrate Manila with existing automation frameworks through REST API or CLI</li>
+                </ul>
+                <p/>
+
+                <img src="images/homegrown.png" style="border-style: none"/>
+                </section>
+                  <section style="font-size: 20pt">
+                <h3>Devops / Continuous Integration</h3>
+                <h5>Speeding up large dev/test suites through parallel testing</h5>
+                <table>
+                    <tr>
+                        <td style="vertical-align: top" width="40%">
+                            <h5>Challenge</h5>
+                            <ul style="font-size: 16pt">
+                                <li>Speed up Dev/Test refresh</li>
+                                <li>Main cause for slow, sequential tests is dependence on data</li>
+                                <li>Traditionally test cases clear the database of app under test and populate with required data</li>
+                            </ul>
+                            <br/>
+                            <br/>
+                            <h5>Solution</h5>
+                            <ul style="font-size: 16pt">
+                                <li>Database data volumes are exposed as Manila shares</li>
+                                <li>Shares are cloned for each test</li>
+                                <li>Create container and isolate test case using container and cloned share</li>
+                                <li>Test run in parallel, dramatically reducing time to completion</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <img style="border-style: none" src="images/devops_ci.png"/>
+                        </td>
+                    </tr>
+                </table>
+                </section>
+                <section>
 					<h2>What's new in Kilo</h2>
 						<ul>
-							<li class="fragment">
-								New driver/networking modes 
+							<li>
+								Plugable networking modes 
 							</li>
-							<li class="fragment">
+							<li>
 								New drivers
 							</li>
-							<li class="fragment">
+							<li>
 								Level of access for shares (RO/RW)
 							</li>
-							<li class="fragment">
+							<li>
 								Public/Private shares
 							</li>
-							<li class="fragment">
+							<li>
 								Private share types
 							</li>
-							<li class="fragment">
+							<li>
 								Pool-aware scheduler support
 							</li>
-							</li>
-							<li class="fragment">
+							<li>
 								Horizon plug-in
 							</li>
-						</ul>
-				</section>
-				<section>
-					<h2>New Kilo Driver modes</h2>
-						<ul>
-							<li class="fragment">
-								Single SVM
-								<ul>
-									<li>SVM setup done manually</li>
-								</ul>
+							<li>
+								DevStack plug-in
 							</li>
-							<li class="fragment">
-								Flat network multiple SVMs
-								<ul>
-									<li>SVMs setup by Manila with single flat network</li>
-									<li>All SVM IPs come from the same subnet</li>
-								</ul>
-							</li>
-							<li class="fragment">
-								Segmented network multiple SVMs
-								<ul>
-									<li>SVMs setup by Manila with segemented networking</li>
-									<li>Network segmentation: VLAN, VXLAN, GRE, STT, etc.</li>
-								</ul>
+							<li>
+								Heat integration
 							</li>
 						</ul>
 				</section>
-				<section>
-					<section>
-						<h2>Drivers</h2>
-							<ul>
-								<li class="fragment">
-									Juno
-									<ul>
-										<li>Generic driver</li>									
-										<li>NetApp Clustered Data Ontap</li>
-										<li>EMC VNX</li>
-										<li>Red Hat Glusterfs</li>
-									</ul>
-								</li>
-							</ul>
-					</section>
-					<section>
-							<ul>
-								<li>
-									Kilo
-									<ul>
-										<li>EMC Isilon</li>									
-										<li>Ganesha</li>
-										<li>HDS</li>
-										<li>HDFS</li>
-										<li>IBM GPFS/Ganesha</li>
-										<li>HP 3Par</li>
-										<li>Huawei OceanStor V3</li>
-										<li>Oracle ZFS</li>
-									</ul>
-								</li>
-							</ul>
-					</section>					
-				</section>
-				<section>
-						<h2>Automation</h2>
-						<p>Manila Puppet Module</p>
+                <section style="font-size: 20pt">
+                <h3>Manila can now operate in a variety of networking models</h3>
+                <h5>Supporting standalone deploments and tenant-scoped overlay networks</h5>
+                <table style="font-size: 16pt">
+                    <tr>
+                        <td style="vertical-align: top">
+                            <ul>
+                                <li>Standalone</li>
+                                <ul>
+                                    <li>Manila config has IP range</li>
+                                </ul>
+                                <li>Nova Network</li>
+                                <ul>
+                                    <li>Network &amp; Subnet</li>
+                                    <li>Flat &amp; VLAN</li>
+                                </ul>
+                                <li>Neutron</li>
+                                <ul>
+                                    <li>Network &amp; Subnet</li>
+                                    <li>VLAN, VXLAN, GRE</li>
+                                </ul>
+                            </ul>
+                        </td>
+                        <td>
+                            <img width="600px" style="border-style: none" src="images/manila_workflow_with_share_servers.png"/>
+                        </td>
+                    </tr>
+                </table>
+                </section>
+				<section style="font-size: 20pt">
+                <h3>Deliver workload-aligned shared file storage offerings</h3>
+                <h5>Create a storage service catalog that maps the differentiated features of storage to Manila</h5>
+                <table style="font-size: 16pt">
+                    <tr>
+                        <td width="60%">
+                            <img width="600px" style="border-style: none" src="images/manila_share_types.png"/>
+                        </td>
+                        <td style="vertical-align: top" width="40%">
+                            <ul>
+                                <br/>
+                                <li>Map features of underlying storage to create classes of service</li>
+                                <ul>
+                                    <li>Aligned to workloads - for example:</li>
+                                    <ul>
+                                        <li>Database needs high IOPS, and data protection</li>
+                                        <li>Temporal needs thin provisioning and compression</li>
+                                    </ul>
+                                </ul>
+                                <br/>
+                                <li>Ensure that consumption matches intent</li>
+                                <ul>
+                                    <li>Showback, chargeback, etc</li>
+                                </ul>
+                            </ul>
+                        </td>
+                    </tr>
+                </table>
+                </section>
+                <section style="font-size: 20pt">
+                <h3>Heat with Manila</h3>
+                <h5>Adding shared file systems as first-class resources in Heat templates</h5>
+                <img style="border-style: none" src="images/manila_heat.png"/>
+                </section>
+		
+ 				<section style="font-size: 24pt">
+                <h3>Manila-UI</h3>
+                <h5>Horizon: The OpenStack Dashboard Project</h5>
+                <ul>
+                    <li>Became official for Kilo</li>
+                    <li>Is a Horizon sub-project</li>
+                    <li>Follows the current recommended integration model</li>
+                </ul>
+                <table>
+                    <tr>
+                        <td>
+                            <img style="border-style: none" src="images/manila_ui.png"/>
+                        </td>
+                    </td>
+                    <td style="vertical-align: top; font-size: 14pt">
+                        <p>Maintained and reviewed jointly by the Manila and Horizon teams</p>
+                        <ul>
+                            <li>Source Code: https://github.com/openstack/manila-ui</li>
+                            <li>Python Package Index: https://pypi.python.org/pypi/manila-ui</li>
+                            <li>Bugs or Blueprints: https://launchpad.net/manila-ui</li>
+                        </ul>
+                    </td>
+                </table>
+                </section>
 
-						  <pre><code data-trim class="bash">
-manila::backend::netapp { 'myBackend':
-	netapp_login => 'clusterAdmin',
-	netapp_password => 'password',
-	netapp_server_hostname => 'netapp.mycorp.com',
-	netapp_transport_type => 'https',
-}
-						</code></pre>
-						<p><a href="https://github.com/stackforge/puppet-manila">https://github.com/stackforge/puppet-manila</a></p>
-				</section>		
-				<section>
-					<h2>Futures/Dev discussion</h2>
-						<ul>
-							<li class="fragment">
-								Manage/Unmanage
-							</li>
-							<li class="fragment">
-								Replication
-							</li>
-							<li class="fragment">
-								Automated mounts
-							</li>
-							<li class="fragment">
-								CephFS driver
-							</li>
-							<li class="fragment">
-								Backup
-							</li>
-						</ul>
-				</section>				
-				<section>
-						<h2>How to get started</h2>
-						<p>vagrant-devstack-manila
+                <section style="font-size: 24pt">
+                <h3>Manila Devstack Plugin</h3>
+                <table>
+                    <tr>
+                        <td style="vertical-align: top; font-size: 16pt">
+                            <ul>
+                                <li>DevStack supports a standard mechanism for including plugins from external repositories</li>
+                                <li>One line <code>local.conf</code> entry</li>
+                                <ul>
+                                    <li><code style="font-size: 12pt">enable_plugin manila https://github.com/openstack/manila</code></li>
+                                </ul>
+                                <li>No more copying <code>extras.d</code> or <code>lib</code> files</li>
+                                <li>Howto: https://wiki.openstack.org/wiki/Manila/KiloDevstack</li>
+                            </ul>
+                        </td>
+                    </td>
+                    <td>
+                        <img style="border-style: none" src="images/devstack.png"/>
+                    </td>
+                </table>
+                </section>
+				<section style="font-size: 24pt">
+                <h3>Manila Share Manage / Unmanage</h3>
+                <h5>Bring existing shares into Manila</h5>
+                <table>
+                    <tr>
+                        <td style="vertical-align: top; font-size: 24pt">
+                            <ul>
+                                <li>API implemented in Kilo</li>
+                                <ul>
+                                    <li>Does not support drivers with share servers (no share networks)</li>
+                                    <li>Only the generic driver (so far)</li>
+                                </ul>
+                                <br/>
+                                <li>More driver support expected during Liberty</li>
+                            </ul>
+                        </td>
+                    </td>
+                    <td>
+                        <img style="border-style: none" src="images/manage_unmanage.png"/>
+                    </td>
+                </table>
+                </section>
+
+                                <section>
+                <h1>Planned work in Liberty and beyond...</h1>
+                </section>
+
+                <section style="font-size: 24pt">
+                <h3>Third party CI</h3>
+                <table>
+                    <tr>
+                        <td style="vertical-align: top; font-size: 16pt" width="400">
+                            <h4><span class="blue">Goal:</span></h4>
+                            <ul>
+                                <li>Every driver should have a working/reporting CI by end of Liberty</li>
+                            </ul>
+                            <br/>
+                            <br/>
+                            <h4><span class="blue">Specific Deadlines:</span></h4>
+                            <ul>
+                                <li>TBD</li>
+                                <li>Most Manila vendors have some 3rd-party CI experience (e.g. Cinder CI)</li>
+                            </ul>
+                        </td>
+                        <td style="vertical-align: top; font-size: 18pt">
+                            <h4><span class="green">1. Silent → 2. Reporting</span><span class="red">→ 3. Voting</span></h4>
+                            <ul>
+                                <li>3rd-party CI will be voting eventually</li>
+                                <ul>
+                                    <li>Needs to be stable without a lot of false negatives</li>
+                                </ul>
+                            </ul>
+                        </td>
+                    </tr>
+                </table>
+                <img src="images/third_party_ci.png" style="border-style: none"/>
+                <small>Example taken from Manila</small>
+                </section>
+
+                <section style="font-size: 24pt">
+                <h3>Futures / Current Dev Discussion</h3>
+                <table>
+                    <tr>
+                        <td style="vertical-align: top; font-size: 24pt">
+                            <ul>
+                                <li>Mount Automation</li>
+                                <li>Share Migration</li>
+                                <li>Replication</li>
+                                <li>Consistency Groups</li>
+                                <li>Thin Provisioning</li>
+                            </ul>
+                        </td>
+                        <td style="vertical-align: top; font-size: 24pt">
+                            <ul>
+                                <li>Versioned Objects</li>
+                                <li>API versioning</li>
+                                <li>Fault indication</li>
+                                <li>Shapshot/Share relationship</li>
+                                <li>Manila Service Image</li>
+                            </ul>
+                        </td>
+                    </tr>
+                </table>
+                </section>
+
+                <section>
+                <h3>Mount Automation:</h3>
+                <img style="border-style: none" src="images/mount_automation.png"/>
+                </section>
+
+                <section style="font-size: 24pt">
+                <table>
+                    <tr>
+                        <td>
+                            <h4>Replication</h4>
+                            <img src="images/replication.png" style="border-style: none"/>
+                            <h4>Consistency Groups</h4>
+                            <img src="images/consistency_groups.png" style="border-style: none"/>
+                        </td>
+                        <td style="vertical-align: top; font-size: 20pt">
+                            <h6>Example CG Snapshot Scenario:</h6>
+                            <ol>
+                                <br/>
+                                <li>Create a consistency group given share types</li>
+                                <li>A consistency group can only contain shares hosted by the same back end</li>
+                                <li>Create a share and add it to a CG</li>
+                                <li>List CGs, show CG</li>
+                                <li>Create CG snapshot, list/show CG snapshot(s), delete CG snapshot(s)</li>
+                                <li>Delete CG</li>
+                            </ol>
+                        </td>
+                    </tr>
+                </table>
+                </section>
+
+                <section style="font-size: 24pt">
+                <h3>Share migration</h3>
+                <table>
+                    <tr>
+                        <td style="vertical-align: top; font-size: 18pt">
+                            <ul>
+                                <li>Administrator moving shares from pool to pool</li>
+                                <br/>
+                                <li>Administrator moving shares from host to host</li>
+                                <br/>
+                                <li>Driver optimized implementation</li>
+                                <br/>
+                                <li>General data copying migration</li>
+                                <br/>
+                                <li>Changing share type</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <img src="images/share_migration.png" style="border-style: none"/>
+                        </td>
+                    </tr>
+                </table>
+                </section>
+
+                <section style="font-size: 24pt">
+                <h2>How to get started with Manila</h2>
+                <table>
+                    <tr>
+                        <td style="vertical-align: top; font-size: 16pt">
+                            <ul>
+                                <br/>
+                                <li>The Manila File Share service is already available in OpenStack RDO community-supported distribution (via packstack) since the Juno release.</li>
+                                <br/>
+                                <li>The Manila File Share service is going to be introduced in the upcoming Red Hat Enterprise Linux OpenStack Platform 7 as a Tech Preview this summer.</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="vertical-align: top; font-size: 16pt">
+                           <p>vagrant-devstack-manila
 						  <pre><code data-trim class="bash">
 $ git clone https://github.com/tlichten/vagrant-devstack-manila
 $ cd vagrant-devstack-manila
 $ vagrant up
 						</code></pre>
 						</p>
-						<p class="fragment" data-fragment-index="2">Packages for RDO, OpenSUSE, Ubuntu</p>
-						<p class="fragment" data-fragment-index="3">IRC on Freenode<br/>
-						<pre class="fragment" data-fragment-index="3"><code data-trim class="bash">
-#openstack-manila
-#openstack-meeting-alt at 15:00 UTC on Thursdays
+                        </td>
+                    </tr>
+                </table>
+                </section>
 
-						</code></pre>
-						</p>
-					</section>
+                <section>
+					<h3>Get Involved with Manila!</h3>
+                    <ul>
+                        <li>https://github.com/openstack/manila</li>
+                        <li>https://github.com/openstack/python-manilaclient</li>
+                        <li>https://github.com/openstack/manila-ui</li>
+                        <br/>
+                        <li>https://wiki.openstack.org/wiki/Manila</li>
+                        <li>https://launchpad.net/manila</li>
+                        <br/>
+                        <li><code>#openstack-manila</code> on IRC (Freenode)</li>
+                        <li>Weekly meetings @ Thursday, 15:00 UTC</li>
+                    </ul>
+				</section>
+
 				<section data-background="images/15426058314_e16127eb29_k_d.jpg">
 					<h1>Credits</h1>
 					<div style="background:#3F3F3F; padding:5px; opacity:0.9;"><ul>
+					
+							<li><a href="https://www.youtube.com/watch?v=2xS_P6q3mWI">
+Manila: An Update on OpenStack's Shared File Services Program
+</a></li>			
 							<li><a href="https://github.com/hakimel/reveal.js">Reveal.js by Hakim El Hattab</a></li>									
 							<li><a href="http://www.flickr.com/photos/danielchodusov/16316218062">Sunrise over Manila by Daniel Chodusov</a>, <a href="https://creativecommons.org/licenses/by-nd/2.0/">Creative Commons licensed</a></li>
-							<li><a href="http://mylolface.com/c9">Fumanchu computer stare by My lol Face</a></li>
-							<li><a href="http://knowyourmeme.com/memes/conspiracy-keanu">Conspiracy Keanu by Know Your Meme</a></li>
 							<li><a href="https://www.flickr.com/photos/traveloriented/15426058314">Manila Bay Sunset by travel oriented</a>, <a href="https://creativecommons.org/licenses/by-nd/2.0/">Creative Commons licensed</a></li>
 					</ul></div>
 				</section>
@@ -387,6 +683,10 @@ $ vagrant up
 
 		</div>
 
+			
+		<div class="logo-position share-reveal">
+			<a href="http://slides.com" class="share-reveal-editor"><img src="images/netapp_logo.png"/ width="100px"></a>
+		</div>
 		<script src="lib/js/head.min.js"></script>
 		<script src="js/reveal.js"></script>
 
